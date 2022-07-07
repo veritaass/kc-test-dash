@@ -1,0 +1,6 @@
+{
+    "auth-server-url": "idp.sk-nemo.com",
+    "realm_name": "ESS-K11",
+    "client_id": "test_app_dash",
+    "client_secret_key": ""
+}
