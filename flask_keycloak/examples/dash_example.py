@@ -27,6 +27,6 @@ def update_greeting(input_value):
 
 
 if __name__ == '__main__':
-    app.run_server(port=8088)
+    app.run_server(port=8088, host='0.0.0.0')
     # app.run_server(port=5006)
 
