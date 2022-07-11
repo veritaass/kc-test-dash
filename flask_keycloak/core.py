@@ -184,6 +184,9 @@ class FlaskKeycloak:
                 if isinstance(config_data, str):
                     config_data = json.load(config_data)
 
+            print("config_data")
+            print(config_data)
+
             # Setup the Keycloak connection.
             keycloak_config = dict(server_url=config_data["auth-server-url"],
                                    realm_name=config_data["realm"],
