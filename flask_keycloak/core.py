@@ -206,8 +206,6 @@ class FlaskKeycloak:
             print(keycloak_config)
             print("<><><>keycloak_openid<><><>")
             print(keycloak_openid)
-            for i in keycloak_openid:
-                print(i)
 
             if authorization_settings is not None:
                 keycloak_openid.load_authorization_config(authorization_settings)
