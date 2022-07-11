@@ -184,7 +184,7 @@ class FlaskKeycloak:
                 if isinstance(config_data, str):
                     config_data = json.load(config_data)
 
-            print("config_data")
+            print("<><><>config_data<><><>")
             print(config_data)
 
             # Setup the Keycloak connection.
@@ -196,8 +196,17 @@ class FlaskKeycloak:
             if keycloak_kwargs is not None:
                 keycloak_config = {**keycloak_config, **keycloak_kwargs}
             keycloak_openid = KeycloakOpenID(**keycloak_config)
+
+            print("<><><>keycloak_kwargs<><><>")
+            print(keycloak_kwargs)
+            print("<><><>keycloak_openid<><><>")
+            print(keycloak_openid)
+
             if authorization_settings is not None:
                 keycloak_openid.load_authorization_config(authorization_settings)
+            print("<><><>authorization_settings<><><>")
+            print(authorization_settings)
+            
         except FileNotFoundError as ex:
             before_login = _setup_debug_session(debug_user, debug_roles)
             # If there is not debug user and no keycloak, raise the exception.
