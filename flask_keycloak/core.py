@@ -209,7 +209,11 @@ class FlaskKeycloak:
                                    verify=config_data["ssl-required"] != "none")
             if keycloak_kwargs is not None:
                 keycloak_config = {**keycloak_config, **keycloak_kwargs}
-            keycloak_openid = KeycloakOpenID(**keycloak_config)            
+            # keycloak_openid = KeycloakOpenID(**keycloak_config)
+            keycloak_openid = KeycloakOpenID(server_url="https://idp.sk-nemo.com",
+                    client_id="test_app_dash",
+                    realm_name="K11-ESS",
+                    client_secret_key=None)
             
             print("<><><>keycloak_config<><><>")
             print(keycloak_config)
@@ -229,7 +233,7 @@ class FlaskKeycloak:
             # Create dummy object, we are bypassing keycloak anyway.
             keycloak_openid = KeycloakOpenID("url", "name", "client_id", "client_secret_key")
 
-            
+
         rtnFlask = FlaskKeycloak(app, keycloak_openid, redirect_uri, logout_path=logout_path,
                             heartbeat_path=heartbeat_path, uri_whitelist=uri_whitelist, login_path=login_path,
                             prefix_callback_path=prefix_callback_path, abort_on_unauthorized=abort_on_unauthorized,
