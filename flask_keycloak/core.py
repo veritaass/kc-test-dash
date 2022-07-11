@@ -37,7 +37,10 @@ class AuthHandler:
         print(self)
         print(self.config_object)
         print(request)
-        return "token" in self.session_interface.open_session(self.config_object, request)
+        token_shape = self.session_interface.open_session(self.config_object, request)
+        print(token_shape)
+        return "token" in token_shape
+        # return "token" in self.session_interface.open_session(self.config_object, request)
 
     def auth_url(self, callback_uri):
         return self.keycloak_openid.auth_url(callback_uri)
@@ -106,6 +109,8 @@ class AuthMiddleWare:
         if check_match_in_list(self.uri_whitelist, request.path):
             return self.app(environ, start_response)
         # If we are logged in, just proceed.
+        print("<><><>request<><><>")
+        print(request)
         if self.auth_handler.is_logged_in(request):
             return self.app(environ, start_response)
         # Before login hook.
