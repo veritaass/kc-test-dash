@@ -37,10 +37,10 @@ class AuthHandler:
         print(self)
         print(self.config_object)
         print(request)
-        token_shape = self.session_interface.open_session(self.config_object, request)
-        print(token_shape)
-        # return True
-        return "token" in self.session_interface.open_session(self.config_object, request)
+        chkToken = self.session_interface.open_session(self.config_object, request)
+        print(chkToken)
+        return chkToken
+        # return "token" in self.session_interface.open_session(self.config_object, request)
 
     def auth_url(self, callback_uri):
         return self.keycloak_openid.auth_url(callback_uri)
@@ -149,6 +149,10 @@ class FlaskKeycloak:
         # Bind secret key.
         if keycloak_openid._client_secret_key is not None:
             app.config['SECRET_KEY'] = keycloak_openid._client_secret_key
+        
+        print('<><><> info <><><>')
+        print(heartbeat_path, login_path, logout_path)
+        
         # Add middleware.
         auth_handler = AuthHandler(app.wsgi_app, app.config, app.session_interface, keycloak_openid)
         auth_middleware = AuthMiddleWare(app.wsgi_app, auth_handler, redirect_uri, uri_whitelist,
@@ -224,13 +228,15 @@ class FlaskKeycloak:
                 raise ex
             # Create dummy object, we are bypassing keycloak anyway.
             keycloak_openid = KeycloakOpenID("url", "name", "client_id", "client_secret_key")
-            rtnFlask = FlaskKeycloak(app, keycloak_openid, redirect_uri, logout_path=logout_path,
-                             heartbeat_path=heartbeat_path, uri_whitelist=uri_whitelist, login_path=login_path,
-                             prefix_callback_path=prefix_callback_path, abort_on_unauthorized=abort_on_unauthorized,
-                             before_login=_setup_debug_session(debug_user, debug_roles))
-            print("<><><>rtnFlask<><><>")
-            print(rtnFlask)
-            return rtnFlask
+
+            
+        rtnFlask = FlaskKeycloak(app, keycloak_openid, redirect_uri, logout_path=logout_path,
+                            heartbeat_path=heartbeat_path, uri_whitelist=uri_whitelist, login_path=login_path,
+                            prefix_callback_path=prefix_callback_path, abort_on_unauthorized=abort_on_unauthorized,
+                            before_login=_setup_debug_session(debug_user, debug_roles))
+        print("<><><>rtnFlask<><><>")
+        print(rtnFlask)
+        return rtnFlask
         # return FlaskKeycloak(app, keycloak_openid, redirect_uri, logout_path=logout_path,
         #                      heartbeat_path=heartbeat_path, uri_whitelist=uri_whitelist, login_path=login_path,
         #                      prefix_callback_path=prefix_callback_path, abort_on_unauthorized=abort_on_unauthorized,
