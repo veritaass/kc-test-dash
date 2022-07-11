@@ -33,6 +33,10 @@ class AuthHandler:
         self.config_object = Objectify(config=config, **config)
 
     def is_logged_in(self, request):
+        print("<><><>is_logged_in<><><>")
+        print(self)
+        print(self.config_object)
+        print(request)
         return "token" in self.session_interface.open_session(self.config_object, request)
 
     def auth_url(self, callback_uri):
@@ -197,8 +201,8 @@ class FlaskKeycloak:
                 keycloak_config = {**keycloak_config, **keycloak_kwargs}
             keycloak_openid = KeycloakOpenID(**keycloak_config)
 
-            print("<><><>keycloak_kwargs<><><>")
-            print(keycloak_kwargs)
+            print("<><><>keycloak_config<><><>")
+            print(keycloak_config)
             print("<><><>keycloak_openid<><><>")
             print(keycloak_openid)
 
@@ -206,7 +210,7 @@ class FlaskKeycloak:
                 keycloak_openid.load_authorization_config(authorization_settings)
             print("<><><>authorization_settings<><><>")
             print(authorization_settings)
-            
+
         except FileNotFoundError as ex:
             before_login = _setup_debug_session(debug_user, debug_roles)
             # If there is not debug user and no keycloak, raise the exception.
