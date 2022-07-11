@@ -216,8 +216,8 @@ class FlaskKeycloak:
                     client_secret_key=None)
             login_path = "https://idp.sk-nemo.com"
             
-            print("<><><>keycloak_openid.certs()<><><>")
-            print(keycloak_openid.certs())
+            # print("<><><>keycloak_openid.certs()<><><>")
+            # print(keycloak_openid.certs())
             print("<><><>keycloak_openid<><><>")
             print(keycloak_openid)
 
