@@ -200,11 +200,14 @@ class FlaskKeycloak:
             if keycloak_kwargs is not None:
                 keycloak_config = {**keycloak_config, **keycloak_kwargs}
             keycloak_openid = KeycloakOpenID(**keycloak_config)
-
+            
+            keycloak_config.client_secret_key = None
             print("<><><>keycloak_config<><><>")
             print(keycloak_config)
             print("<><><>keycloak_openid<><><>")
             print(keycloak_openid)
+            for i in keycloak_openid:
+                print(i)
 
             if authorization_settings is not None:
                 keycloak_openid.load_authorization_config(authorization_settings)
