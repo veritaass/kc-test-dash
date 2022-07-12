@@ -33,14 +33,14 @@ class AuthHandler:
         self.config_object = Objectify(config=config, **config)
 
     def is_logged_in(self, request):
-        print("<><><>is_logged_in<><><>")
-        print(self)
-        print(self.config_object)
-        print(request)
-        chkToken = self.session_interface.open_session(self.config_object, request)
-        print(chkToken)
-        return chkToken
-        # return "token" in self.session_interface.open_session(self.config_object, request)
+        # print("<><><>is_logged_in<><><>")
+        # print(self)
+        # print(self.config_object)
+        # print(request)
+        # chkToken = self.session_interface.open_session(self.config_object, request)
+        # print(chkToken)
+        # return chkToken
+        return "token" in self.session_interface.open_session(self.config_object, request)
 
     def auth_url(self, callback_uri):
         return self.keycloak_openid.auth_url(callback_uri)
@@ -103,6 +103,8 @@ class AuthMiddleWare:
             return f"{scheme}://{host}"
 
     def __call__(self, environ, start_response):
+        print("<><><>__call__<><><>")
+        print(self, environ, start_response)
         response = None
         request = Request(environ)
         # If the uri has been whitelisted, just proceed.
