@@ -8,6 +8,8 @@ from keycloak.exceptions import KeycloakConnectionError, KeycloakAuthenticationE
 from werkzeug.wrappers import Request
 from typing import Union
 
+import sys
+
 
 class Objectify(object):
     def __init__(self, **kwargs):
@@ -33,6 +35,13 @@ class AuthHandler:
         self.config_object = Objectify(config=config, **config)
 
     def is_logged_in(self, request):
+        print("<><><>is_logged_in<><><>")
+        print(self, file=sys.stdout)
+        # print(self.config_object)
+        print(request, file=sys.stdout)
+        # chkToken = self.session_interface.open_session(self.config_object, request)
+        # print(chkToken)
+        # return chkToken
         return "token" in self.session_interface.open_session(self.config_object, request)
 
     def auth_url(self, callback_uri):
@@ -75,7 +84,8 @@ class AuthMiddleWare:
         # Setup uris.
         self.before_login = before_login
         # Optionally, prefix callback path with current path.
-        self.callback_path = prefix_callback_path + "/keycloak/callback"
+        # self.callback_path = prefix_callback_path + "/keycloak/callback"
+        self.callback_path = prefix_callback_path + "https://idp.sk-nemo.com"
         self.abort_on_unauthorized = abort_on_unauthorized
 
     def get_auth_uri(self, environ):
@@ -96,12 +106,16 @@ class AuthMiddleWare:
             return f"{scheme}://{host}"
 
     def __call__(self, environ, start_response):
+        print("<><><>__call__<><><>")
+        print(self, environ, start_response, file=sys.stdout)
         response = None
         request = Request(environ)
         # If the uri has been whitelisted, just proceed.
         if check_match_in_list(self.uri_whitelist, request.path):
             return self.app(environ, start_response)
         # If we are logged in, just proceed.
+        print("<><><>request<><><>")
+        print(request, file=sys.stdout)
         if self.auth_handler.is_logged_in(request):
             return self.app(environ, start_response)
         # Before login hook.
@@ -140,8 +154,16 @@ class FlaskKeycloak:
         # Bind secret key.
         if keycloak_openid._client_secret_key is not None:
             app.config['SECRET_KEY'] = keycloak_openid._client_secret_key
+        
+        print('<><><> info <><><>')
+        print(heartbeat_path, login_path, logout_path)
+        
         # Add middleware.
+        print("<><><> middle <><><>")
+        print(app.wsgi_app, app.config, app.session_interface, keycloak_openid)
         auth_handler = AuthHandler(app.wsgi_app, app.config, app.session_interface, keycloak_openid)
+        print("<><><> auth_handler <><><>")
+        print(auth_handler)
         auth_middleware = AuthMiddleWare(app.wsgi_app, auth_handler, redirect_uri, uri_whitelist,
                                       prefix_callback_path, abort_on_unauthorized, before_login)
 
@@ -157,6 +179,10 @@ class FlaskKeycloak:
             def route_logout():
                 return auth_handler.logout(redirect(auth_middleware.get_redirect_uri(request.environ)))
         if login_path:
+            print("<><><> if login <><><>")
+            print(login_path, file=sys.stdout)
+            print(request, file=sys.stdout)
+            print(request.environ, file=sys.stdout)
             @app.route(login_path, methods=['POST'])
             def route_login():
                 if request.json is None or ("username" not in request.json or "password" not in request.json):
@@ -184,17 +210,36 @@ class FlaskKeycloak:
                 if isinstance(config_data, str):
                     config_data = json.load(config_data)
 
+            print("<><><>config_data<><><>")
+            print(config_data)
+
             # Setup the Keycloak connection.
             keycloak_config = dict(server_url=config_data["auth-server-url"],
                                    realm_name=config_data["realm"],
-                                   client_id=config_data["resource"],
-                                   client_secret_key=config_data["credentials"]["secret"],
+                                   client_id=config_data["client_id"],
+                                   client_secret_key=None,
+                                #    client_secret_key=config_data["credentials"]["secret"] != "",
                                    verify=config_data["ssl-required"] != "none")
             if keycloak_kwargs is not None:
                 keycloak_config = {**keycloak_config, **keycloak_kwargs}
             keycloak_openid = KeycloakOpenID(**keycloak_config)
+            # login_path = config_data["auth-server-url"]
+            # keycloak_openid = KeycloakOpenID(server_url="https://idp.sk-nemo.com",
+            #         client_id="test_app_dash",
+            #         realm_name="K11-ESS",
+            #         client_secret_key=None)
+            # login_path = "https://idp.sk-nemo.com"
+            
+            # print("<><><>keycloak_openid.certs()<><><>")
+            # print(keycloak_openid.certs())
+            print("<><><>keycloak_config<><><>")
+            print(keycloak_config)
+
             if authorization_settings is not None:
                 keycloak_openid.load_authorization_config(authorization_settings)
+            print("<><><>authorization_settings<><><>")
+            print(authorization_settings)
+
         except FileNotFoundError as ex:
             before_login = _setup_debug_session(debug_user, debug_roles)
             # If there is not debug user and no keycloak, raise the exception.
@@ -202,10 +247,19 @@ class FlaskKeycloak:
                 raise ex
             # Create dummy object, we are bypassing keycloak anyway.
             keycloak_openid = KeycloakOpenID("url", "name", "client_id", "client_secret_key")
-        return FlaskKeycloak(app, keycloak_openid, redirect_uri, logout_path=logout_path,
-                             heartbeat_path=heartbeat_path, uri_whitelist=uri_whitelist, login_path=login_path,
-                             prefix_callback_path=prefix_callback_path, abort_on_unauthorized=abort_on_unauthorized,
-                             before_login=_setup_debug_session(debug_user, debug_roles))
+
+
+        rtnFlask = FlaskKeycloak(app, keycloak_openid, redirect_uri, logout_path=logout_path,
+                            heartbeat_path=heartbeat_path, uri_whitelist=uri_whitelist, login_path=login_path,
+                            prefix_callback_path=prefix_callback_path, abort_on_unauthorized=abort_on_unauthorized,
+                            before_login=_setup_debug_session(debug_user, debug_roles))
+        print("<><><>rtnFlask<><><>")
+        print(rtnFlask)
+        return rtnFlask
+        # return FlaskKeycloak(app, keycloak_openid, redirect_uri, logout_path=logout_path,
+        #                      heartbeat_path=heartbeat_path, uri_whitelist=uri_whitelist, login_path=login_path,
+        #                      prefix_callback_path=prefix_callback_path, abort_on_unauthorized=abort_on_unauthorized,
+        #                      before_login=_setup_debug_session(debug_user, debug_roles))
 
     @staticmethod
     def try_from_kc_oidc_json(app, **kwargs):
