@@ -82,7 +82,8 @@ class AuthMiddleWare:
         # Setup uris.
         self.before_login = before_login
         # Optionally, prefix callback path with current path.
-        self.callback_path = prefix_callback_path + "/keycloak/callback"
+        # self.callback_path = prefix_callback_path + "/keycloak/callback"
+        self.callback_path = prefix_callback_path + "https://idp.sk-nemo.com"
         self.abort_on_unauthorized = abort_on_unauthorized
 
     def get_auth_uri(self, environ):
