@@ -188,7 +188,8 @@ class FlaskKeycloak:
             keycloak_config = dict(server_url=config_data["auth-server-url"],
                                    realm_name=config_data["realm"],
                                    client_id=config_data["resource"],
-                                   client_secret_key=config_data["credentials"]["secret"],
+                                   client_secret_key=None,
+                                #    client_secret_key=config_data["credentials"]["secret"],
                                    verify=config_data["ssl-required"] != "none")
             if keycloak_kwargs is not None:
                 keycloak_config = {**keycloak_config, **keycloak_kwargs}
