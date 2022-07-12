@@ -33,10 +33,10 @@ class AuthHandler:
         self.config_object = Objectify(config=config, **config)
 
     def is_logged_in(self, request):
-        # print("<><><>is_logged_in<><><>")
-        # print(self)
+        print("<><><>is_logged_in<><><>")
+        print(self)
         # print(self.config_object)
-        # print(request)
+        print(request)
         # chkToken = self.session_interface.open_session(self.config_object, request)
         # print(chkToken)
         # return chkToken
