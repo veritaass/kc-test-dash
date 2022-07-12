@@ -8,6 +8,8 @@ from keycloak.exceptions import KeycloakConnectionError, KeycloakAuthenticationE
 from werkzeug.wrappers import Request
 from typing import Union
 
+import sys
+
 
 class Objectify(object):
     def __init__(self, **kwargs):
@@ -34,9 +36,9 @@ class AuthHandler:
 
     def is_logged_in(self, request):
         print("<><><>is_logged_in<><><>")
-        print(self)
+        print(self, file=sys.stdout)
         # print(self.config_object)
-        print(request)
+        print(request, file=sys.stdout)
         # chkToken = self.session_interface.open_session(self.config_object, request)
         # print(chkToken)
         # return chkToken
@@ -105,7 +107,7 @@ class AuthMiddleWare:
 
     def __call__(self, environ, start_response):
         print("<><><>__call__<><><>")
-        print(self, environ, start_response)
+        print(self, environ, start_response, file=sys.stdout)
         response = None
         request = Request(environ)
         # If the uri has been whitelisted, just proceed.
@@ -113,7 +115,7 @@ class AuthMiddleWare:
             return self.app(environ, start_response)
         # If we are logged in, just proceed.
         print("<><><>request<><><>")
-        print(request)
+        print(request, file=sys.stdout)
         if self.auth_handler.is_logged_in(request):
             return self.app(environ, start_response)
         # Before login hook.
@@ -178,9 +180,9 @@ class FlaskKeycloak:
                 return auth_handler.logout(redirect(auth_middleware.get_redirect_uri(request.environ)))
         if login_path:
             print("<><><> if login <><><>")
-            print(login_path)
-            print(request)
-            print(request.environ)
+            print(login_path, file=sys.stdout)
+            print(request, file=sys.stdout)
+            print(request.environ, file=sys.stdout)
             @app.route(login_path, methods=['POST'])
             def route_login():
                 if request.json is None or ("username" not in request.json or "password" not in request.json):
