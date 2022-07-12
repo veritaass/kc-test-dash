@@ -203,25 +203,26 @@ class FlaskKeycloak:
             print(config_data)
 
             # Setup the Keycloak connection.
-            # keycloak_config = dict(server_url=config_data["auth-server-url"],
-            #                        realm_name=config_data["realm"],
-            #                        client_id=config_data["client_id"],
-            #                        client_secret_key=None,
-            #                     #    client_secret_key=config_data["credentials"]["secret"] != "",
-            #                        verify=config_data["ssl-required"] != "none")
-            # if keycloak_kwargs is not None:
-            #     keycloak_config = {**keycloak_config, **keycloak_kwargs}
-            # keycloak_openid = KeycloakOpenID(**keycloak_config)
-            keycloak_openid = KeycloakOpenID(server_url="https://idp.sk-nemo.com",
-                    client_id="test_app_dash",
-                    realm_name="K11-ESS",
-                    client_secret_key=None)
-            login_path = "https://idp.sk-nemo.com"
+            keycloak_config = dict(server_url=config_data["auth-server-url"],
+                                   realm_name=config_data["realm"],
+                                   client_id=config_data["client_id"],
+                                   client_secret_key=None,
+                                #    client_secret_key=config_data["credentials"]["secret"] != "",
+                                   verify=config_data["ssl-required"] != "none")
+            if keycloak_kwargs is not None:
+                keycloak_config = {**keycloak_config, **keycloak_kwargs}
+            keycloak_openid = KeycloakOpenID(**keycloak_config)
+            login_path = config_data["auth-server-url"]
+            # keycloak_openid = KeycloakOpenID(server_url="https://idp.sk-nemo.com",
+            #         client_id="test_app_dash",
+            #         realm_name="K11-ESS",
+            #         client_secret_key=None)
+            # login_path = "https://idp.sk-nemo.com"
             
             # print("<><><>keycloak_openid.certs()<><><>")
             # print(keycloak_openid.certs())
-            print("<><><>keycloak_openid<><><>")
-            print(keycloak_openid)
+            print("<><><>keycloak_config<><><>")
+            print(keycloak_config)
 
             if authorization_settings is not None:
                 keycloak_openid.load_authorization_config(authorization_settings)
