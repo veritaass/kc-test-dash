@@ -156,7 +156,11 @@ class FlaskKeycloak:
         print(heartbeat_path, login_path, logout_path)
         
         # Add middleware.
+        print("<><><> middle <><><>")
+        print(app.wsgi_app, app.config, app.session_interface, keycloak_openid)
         auth_handler = AuthHandler(app.wsgi_app, app.config, app.session_interface, keycloak_openid)
+        print("<><><> auth_handler <><><>")
+        print(auth_handler)
         auth_middleware = AuthMiddleWare(app.wsgi_app, auth_handler, redirect_uri, uri_whitelist,
                                       prefix_callback_path, abort_on_unauthorized, before_login)
 
