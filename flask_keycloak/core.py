@@ -176,6 +176,10 @@ class FlaskKeycloak:
             def route_logout():
                 return auth_handler.logout(redirect(auth_middleware.get_redirect_uri(request.environ)))
         if login_path:
+            print("<><><> if login <><><>")
+            print(login_path)
+            print(request)
+            print(request.environ)
             @app.route(login_path, methods=['POST'])
             def route_login():
                 if request.json is None or ("username" not in request.json or "password" not in request.json):
@@ -216,7 +220,7 @@ class FlaskKeycloak:
             if keycloak_kwargs is not None:
                 keycloak_config = {**keycloak_config, **keycloak_kwargs}
             keycloak_openid = KeycloakOpenID(**keycloak_config)
-            login_path = config_data["auth-server-url"]
+            # login_path = config_data["auth-server-url"]
             # keycloak_openid = KeycloakOpenID(server_url="https://idp.sk-nemo.com",
             #         client_id="test_app_dash",
             #         realm_name="K11-ESS",
