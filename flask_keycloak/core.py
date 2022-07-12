@@ -157,7 +157,8 @@ class FlaskKeycloak:
             def route_logout():
                 return auth_handler.logout(redirect(auth_middleware.get_redirect_uri(request.environ)))
         if login_path:
-            @app.route(login_path, methods=['POST'])
+            # @app.route(login_path, methods=['POST'])
+            @app.route('/login', methods=['POST'])
             def route_login():
                 if request.json is None or ("username" not in request.json or "password" not in request.json):
                     return "No username and/or password was specified as json", 400
