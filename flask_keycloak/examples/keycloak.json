@@ -1,6 +1,7 @@
 {
     "auth-server-url": "https://idp.sk-nemo.com",
     "realm": "K11-ESS",
+    "resource": "test_app_dash",
     "client_id": "test_app_dash",
     "credentials": {"secret":""},
     "ssl-required": ""
