@@ -1,8 +1,12 @@
 {
-    "auth-server-url": "https://idp.sk-nemo.com",
-    "realm": "K11-ESS",
-    "resource": "test_app_dash",
-    "client_id": "test_app_dash",
-    "credentials": {"secret":""},
-    "ssl-required": ""
+  "realm": "K11-ESS",
+  "auth-server-url": "https://idp.sk-nemo.com/",
+  "ssl-required": "external",
+  "resource": "test_app_dash",
+  "verify-token-audience": true,
+  "credentials": {
+    "secret": "ql7YJaUkhrpB8hBSEgvpLv34Mjz6A11s"
+  },
+  "use-resource-role-mappings": true,
+  "confidential-port": 0
 }
