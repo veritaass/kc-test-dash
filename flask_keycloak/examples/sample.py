@@ -6,7 +6,7 @@ from flask_cors import CORS
 import requests
 
 app = Flask(__name__)
-
+app.run_server(port=8088, host='0.0.0.0')
 
 @app.route('/token_login/', methods=['POST'])
 def get_token():
@@ -64,7 +64,7 @@ def refresh_token():
     return jsonify(ret), 200
 
 
-@auth.route('/users/', methods=['POST'])
+@app.route('/users/', methods=['POST'])
 def create_user():
     try:
         body = request.get_json()
